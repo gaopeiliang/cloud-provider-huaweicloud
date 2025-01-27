@@ -24,7 +24,7 @@ import (
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	cloudprovider "k8s.io/cloud-provider"
@@ -523,7 +523,7 @@ func (d *DedicatedLoadBalancer) addOrRemoveMembers(loadbalancer *elbmodel.LoadBa
 	}
 	klog.Infof("LoadBalancer Service: %s/%s, Pod list: %v", service.Namespace, service.Name, len(podList.Items))
 	for _, pod := range podList.Items {
-		if !IsPodActive(pod) {
+		if !service.Spec.PublishNotReadyAddresses && !IsPodActive(pod) {
 			klog.Errorf("Pod %s/%s is not activated skipping adding to ELB", pod.Namespace, pod.Name)
 			continue
 		}
